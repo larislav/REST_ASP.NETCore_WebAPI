@@ -47,7 +47,9 @@ namespace DevIO.Api.Configuration
 
         public static IApplicationBuilder UseMvcConfiguration(this IApplicationBuilder app)
         {
+            
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseCors("Development");
             //app.UseMvc();
             return app;

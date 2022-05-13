@@ -18,6 +18,7 @@ namespace DevIO.Api.V1.Controllers
    // [DisableCors]
     public class AuthController : MainController
     {
+        private readonly ILogger _logger;
         private readonly AppSettings _appSettings;
         private readonly SignInManager<IdentityUser> _signInManager; //sign e autenticacao o usuario
         private readonly UserManager<IdentityUser> _userManager;   //criar o usuario, manipulações
@@ -25,11 +26,13 @@ namespace DevIO.Api.V1.Controllers
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             IOptions<AppSettings> appSettings,
-            IUser user) : base(notificador, user)
+            IUser user,
+            ILogger<AuthController> logger) : base(notificador, user)
         {
             _signInManager = signInManager; 
             _userManager = userManager; 
             _appSettings = appSettings.Value;
+            _logger = logger;
         }
 
         [HttpPost("nova-conta")]
@@ -67,6 +70,7 @@ namespace DevIO.Api.V1.Controllers
             
             if (result.Succeeded)
             {
+                _logger.LogInformation("Usuario " + loginUser.Email + " logado com sucesso");
                 return CustomResponse(await GerarJwt(loginUser.Email));
             }
             if (result.IsLockedOut)
